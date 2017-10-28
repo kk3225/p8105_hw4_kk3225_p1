@@ -1,0 +1,38 @@
+---
+title: "p8105_hw4_kk3225"
+author: "Kwangmin Kim"
+date: "October 26, 2017"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: haddock
+    toc: true
+    toc_float:
+      collapse: true
+      smooth_scroll: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(ggridges)
+library(lubridate)
+options(tibble.print_min = 8)
+```
+
+### Problem 1
+I worked with Parsons, Faith for problem 1. As a lead, I made the raw data tidy.
+```{r}
+pups_data = read_csv("./data/FAS_pups.csv", col_types= "ciiiii")%>%
+  clean_names()%>%
+  gather(key = pd_outcome, value = post_natal_day, pd_ears:pd_walk)%>%
+  separate(pd_outcome, into = c("pd", "outcome"), sep = "_")%>%
+  select(-pd)%>%
+  filter(!is.na(post_natal_day))%>%
+  arrange(litter_number)
+
+```
+
