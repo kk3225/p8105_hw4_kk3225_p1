@@ -20,6 +20,7 @@ library(dplyr)
 library(janitor)
 library(ggridges)
 library(lubridate)
+library(forcats)
 options(tibble.print_min = 8)
 ```
 
@@ -36,3 +37,20 @@ pups_data = read_csv("./data/FAS_pups.csv", col_types= "ciiiii")%>%
 
 ```
 
+### Pups' developmental landmarks
+
+```{r visualize_pups}
+
+pups_data %>%
+  # Relevel manually (based on mean postnatal_days)
+  mutate(outcome = fct_relevel(outcome, c("ears", "pivot", "walk", "eyes"))) %>%
+  ggplot(aes(x = outcome, y = post_natal_day)) +
+    geom_boxplot() +
+    geom_point(position = "jitter", alpha = .10, color = "blue") +
+    labs (x = "Developmental landmark",
+          y = "Postnatal days") +
+    theme_classic()
+
+```
+
+The boxplot above shows that, among the developmental landmarks, the ears are the first to develop (mean = `r round(pups_data %>% filter(outcome == "ears") %>% pull(post_natal_day) %>% mean(), 1)` days, SD = `r round(pups_data %>% filter(outcome == "ears") %>% pull(post_natal_day) %>% sd(), 1)`), followed by pivoting (mean = `r round(pups_data %>% filter(outcome == "pivot") %>% pull(post_natal_day) %>% mean(), 1)` days, SD = `r round(pups_data %>% filter(outcome == "pivot") %>% pull(post_natal_day) %>% sd(), 1)`), then walking (mean = `r round(pups_data %>% filter(outcome == "walk") %>% pull(post_natal_day) %>% mean(), 1)` days, SD = `r round(pups_data %>% filter(outcome == "walk") %>% pull(post_natal_day) %>% sd(), 1)`), and lastly, the eyes (mean = `r round(pups_data %>% filter(outcome == "eyes") %>% pull(post_natal_day) %>% mean(), 1)` days, SD = `r round(pups_data %>% filter(outcome == "eyes") %>% pull(post_natal_day) %>% sd(), 1)`)
